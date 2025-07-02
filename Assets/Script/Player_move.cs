@@ -1,41 +1,44 @@
-//using UnityEngine;
-//using UnityEngine.InputSystem;
+using UnityEngine;
+using UnityEngine.InputSystem; // ← 新Input Systemに必要
 
-//public class Player_move : MonoBehaviour
-//{
-//    private PlayerInputActions inputActions;
-//    private Vector2 moveInput;
-//    private float rotationInput;
-//    public float moveSpeed = 3f;
-//    public float rotationSpeed = 100f;
+public class BioMovement : MonoBehaviour
+{
+    private PlayerInputActions inputActions; // 自動生成されたInputActionsクラス
+    private Vector2 moveInput;     // Move（前後移動）用
+    private float rotateInput;     // Rotate（左右回転）用
 
-//    private void Awake()
-//    {
-//        inputActions = new PlayerInputActions();
-//    }
+    public float moveSpeed = 3f;
+    public float rotationSpeed = 120f;
 
-//    private void OnEnable()
-//    {
-//        inputActions.Player.Enable();
-//        inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-//        inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+    private void Awake()
+    {
+        inputActions = new PlayerInputActions();
+    }
 
-//        inputActions.Player.Rotate.performed += ctx => rotationInput = ctx.ReadValue<float>();
-//        inputActions.Player.Rotate.canceled += ctx => rotationInput = 0f;
-//    }
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
 
-//    private void OnDisable()
-//    {
-//        inputActions.Player.Disable();
-//    }
+        // Move (Vector2：上下だけ使う)
+        inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-//    void Update()
-//    {
-//        // 回転（左右入力）
-//        transform.Rotate(Vector3.up, rotationInput * rotationSpeed * Time.deltaTime);
+        // Rotate (float：-1～1)
+        inputActions.Player.Rotate.performed += ctx => rotateInput = ctx.ReadValue<float>();
+        inputActions.Player.Rotate.canceled += ctx => rotateInput = 0f;
+    }
 
-//        // 前進・後退（上下入力）
-//        transform.Translate(Vector3.forward * moveInput.y * moveSpeed * Time.deltaTime);
-//    }
-//}
+    private void OnDisable()
+    {
+        inputActions.Player.Disable();
+    }
 
+    private void Update()
+    {
+        // 左右回転（X軸ではなくY軸）
+        transform.Rotate(Vector3.up, rotateInput * rotationSpeed * Time.deltaTime);
+
+        // 前後移動（キャラの前向き方向）
+        transform.Translate(Vector3.forward * moveInput.y * moveSpeed * Time.deltaTime);
+    }
+}
