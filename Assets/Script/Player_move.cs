@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // ← 新Input Systemに必要
 
-public class BioMovement : MonoBehaviour
+public class Player_Move: MonoBehaviour
 {
     private PlayerInputActions inputActions; // 自動生成されたInputActionsクラス
     private Vector2 moveInput;     // Move（前後移動）用
