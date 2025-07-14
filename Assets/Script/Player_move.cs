@@ -1,14 +1,16 @@
-using UnityEngine;
-using UnityEngine.InputSystem; // © VInput System‚É•K—v
+ï»¿using UnityEngine;
+using UnityEngine.InputSystem; // æ–°Input System
 
-public class Player_Move: MonoBehaviour
+public class Player_Move : MonoBehaviour
 {
-    private PlayerInputActions inputActions; // ©“®¶¬‚³‚ê‚½InputActionsƒNƒ‰ƒX
-    private Vector2 moveInput;     // Movei‘OŒãˆÚ“®j—p
-    private float rotateInput;     // Rotatei¶‰E‰ñ“]j—p
+    private PlayerInputActions inputActions;
+    private Vector2 moveInput;
+    private float rotateInput;
 
     public float moveSpeed = 3f;
     public float rotationSpeed = 120f;
+    private string text; // è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆï¼ˆUIãªã©ã«ä½¿ãˆã‚‹ï¼‰
+    private GameObject nearbyItem = null; // ä»Šã¶ã¤ã‹ã£ã¦ã‚‹ã‚¢ã‚¤ãƒ†ãƒ 
 
     private void Awake()
     {
@@ -19,26 +21,70 @@ public class Player_Move: MonoBehaviour
     {
         inputActions.Player.Enable();
 
-        // Move (Vector2Fã‰º‚¾‚¯g‚¤)
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        // Rotate (floatF-1`1)
         inputActions.Player.Rotate.performed += ctx => rotateInput = ctx.ReadValue<float>();
         inputActions.Player.Rotate.canceled += ctx => rotateInput = 0f;
+
+        // Interactã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ç™»éŒ²ï¼ˆFã‚­ãƒ¼ or Aãƒœã‚¿ãƒ³ï¼‰
+        inputActions.Player.Interact.performed += OnInteract;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.Move.performed -= ctx => moveInput = ctx.ReadValue<Vector2>();
+        inputActions.Player.Rotate.performed -= ctx => rotateInput = ctx.ReadValue<float>();
+        inputActions.Player.Interact.performed -= OnInteract;
+
         inputActions.Player.Disable();
     }
 
     private void Update()
     {
-        // ¶‰E‰ñ“]iX²‚Å‚Í‚È‚­Y²j
+        // å›è»¢
         transform.Rotate(Vector3.up, rotateInput * rotationSpeed * Time.deltaTime);
-
-        // ‘OŒãˆÚ“®iƒLƒƒƒ‰‚Ì‘OŒü‚«•ûŒüj
+        // å‰é€²ãƒ»å¾Œé€€
         transform.Translate(Vector3.forward * moveInput.y * moveSpeed * Time.deltaTime);
     }
+
+    // ã‚¢ã‚¤ãƒ†ãƒ ã«ã¶ã¤ã‹ã£ã¦ã„ã‚‹é–“
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Item"))
+        {
+            nearbyItem = collision.gameObject;
+            text = "F æ‹¾ã†"; // ã“ã®textã‚’UIã«ä½¿ãˆã°è¡¨ç¤ºã§ãã‚‹ã‚ˆ
+        }
+    }
+
+    // é›¢ã‚ŒãŸã‚‰ãƒªã‚»ãƒƒãƒˆ
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Item"))
+        {
+            nearbyItem = null;
+            text = "";
+        }
+    }
+
+    // Interactï¼ˆF or Aãƒœã‚¿ãƒ³ï¼‰ã‚’æŠ¼ã—ãŸã¨ãã®å‡¦ç†
+    private void OnInteract(InputAction.CallbackContext context)
+    {
+        if (nearbyItem != null)
+        {
+            text = nearbyItem.name + " ã‚’æ‹¾ã£ãŸï¼";
+            Destroy(nearbyItem);
+            nearbyItem = null;
+
+            // 2ç§’å¾Œã«textã‚’ç©ºã«ã—ãŸã„å ´åˆ
+            // Invoke(nameof(ClearText), 2f);
+        }
+    }
+
+    // textã‚’æ¶ˆã™é–¢æ•°ï¼ˆä½¿ã„ãŸã‘ã‚Œã°â†‘ã®Invokeã¨åˆã‚ã›ã¦ï¼‰
+    // private void ClearText()
+    // {
+    //     text = "";
+    // }
 }
