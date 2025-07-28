@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem; // 新Input System
 
 public class Player_Move : MonoBehaviour
@@ -11,6 +12,7 @@ public class Player_Move : MonoBehaviour
     public float rotationSpeed = 120f;
     private string text; // 表示するテキスト（UIなどに使える）
     private GameObject nearbyItem = null; // 今ぶつかってるアイテム
+    public TextMeshProUGUI item_text;// アイテムテキスト
 
     private void Awake()
     {
@@ -39,7 +41,6 @@ public class Player_Move : MonoBehaviour
 
         inputActions.Player.Disable();
     }
-
     private void Update()
     {
         // 回転
@@ -67,7 +68,6 @@ public class Player_Move : MonoBehaviour
             text = "";
         }
     }
-
     // Interact（F or Aボタン）を押したときの処理
     private void OnInteract(InputAction.CallbackContext context)
     {
@@ -81,7 +81,6 @@ public class Player_Move : MonoBehaviour
             // Invoke(nameof(ClearText), 2f);
         }
     }
-
     // textを消す関数（使いたければ↑のInvokeと合わせて）
     // private void ClearText()
     // {
