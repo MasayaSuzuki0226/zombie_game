@@ -8,11 +8,11 @@ public class Player_Move : MonoBehaviour
     private PlayerInputActions inputActions;
     private Vector2 _moveInput;
     private float _rotateInput;
-    private float _moveSpeed = 3f;
-    private float _rotationSpeed = 120f;
+    [SerializeField] private float _moveSpeed = 3f;
+    [SerializeField] private float _rotationSpeed = 120f;
     private string text; // 表示するテキスト（UIなどに使える）
     private GameObject nearbyItem = null; // 今ぶつかってるアイテム
-    //private TextMeshProUGUI item_text;// アイテムテキスト
+    private TextMeshProUGUI _item_text;// アイテムテキスト
     public List<string> Item_list = new List<string>();
 
     private void Awake()
@@ -74,10 +74,8 @@ public class Player_Move : MonoBehaviour
     {
         if (nearbyItem != null)
         {
-            text = nearbyItem.name + " を拾った！";
-            Destroy(nearbyItem);
             nearbyItem = null;
-
+            _item_text.text = "I got" +nearbyItem+ "!";
         }
     }
    
