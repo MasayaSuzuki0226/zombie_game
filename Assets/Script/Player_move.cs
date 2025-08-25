@@ -14,7 +14,8 @@ public class Player_Move : MonoBehaviour
     private GameObject nearbyItem = null; // 今ぶつかってるアイテム
     private TextMeshProUGUI _item_text;// アイテムテキスト
     public List<string> Item_list = new List<string>();
-
+    public int HP=100;
+    public TextMeshProUGUI HP_text;
     private void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -78,5 +79,11 @@ public class Player_Move : MonoBehaviour
             _item_text.text = "I got" +nearbyItem+ "!";
         }
     }
-   
+    public void Damage(int damage)
+    {
+        HP -= damage;
+        HP_text.text = "HP " + HP;
+        //navmeshを使って追跡AIを作成
+    }
+
 }
