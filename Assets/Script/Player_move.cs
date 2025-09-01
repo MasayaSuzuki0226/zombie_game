@@ -59,8 +59,6 @@ public class Player_Move : MonoBehaviour
             Item_list.Add(collision.gameObject.name);
             Destroy(collision.gameObject);
         }
-
-        //Debug.Log(collision.gameObject.name);
     }
 
     // 離れたらリセット
