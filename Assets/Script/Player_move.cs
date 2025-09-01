@@ -10,6 +10,7 @@ public class Player_Move : MonoBehaviour
     private float _rotateInput;
     [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private float _rotationSpeed = 120f;
+    [SerializeField] private GameObject _gameOver_text;
     private string text; // 表示するテキスト（UIなどに使える）
     private GameObject nearbyItem = null; // 今ぶつかってるアイテム
     private TextMeshProUGUI _item_text;// アイテムテキスト
@@ -84,6 +85,11 @@ public class Player_Move : MonoBehaviour
         HP -= damage;
         HP_text.text = "HP " + HP;
         //navmeshを使って追跡AIを作成
+        if(HP<1)
+        {
+            _gameOver_text.SetActive(true);
+            return;
+        }
     }
 
 }
